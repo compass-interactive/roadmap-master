@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Mail, Lock, Github } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +25,7 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchMode }) => {
   const { toast } = useToast();
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   
   const {
@@ -56,20 +55,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchMode }) =
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    const { error } = await signInWithGoogle();
-    
-    if (error) {
-      toast({
-        title: "Google Sign In Failed",
-        description: error.message || "Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full flex-1">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
@@ -118,15 +105,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchMode }) =
         <div className="absolute inset-0 flex items-center">
           <Separator />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-        </div>
+        
       </div>
-
-      <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
-        <Github className="mr-2 h-4 w-4" />
-        Continue with Google
-      </Button>
 
       {onSwitchMode && (
         <div className="text-center text-sm">
