@@ -59,11 +59,10 @@ const RoadmapCanvas: React.FC<RoadmapCanvasProps> = ({ nodes, setNodes, edges, s
           fontColor: node.fontColor || '#222222',
         },
         type: 'mindmap',
-        selected: node.id === selectedNodeId,
       }))
     );
     // eslint-disable-next-line
-  }, [nodes, selectedNodeId]);
+  }, [nodes]);
 
   React.useEffect(() => {
     // Sync parent state when edges change

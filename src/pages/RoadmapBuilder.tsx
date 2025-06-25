@@ -20,7 +20,7 @@ const RoadmapBuilder: React.FC = () => {
 
   const handleNodeSubmit = (data: Omit<RoadmapNode, 'id' | 'position'> & { bgColor?: string; fontColor?: string }) => {
     if (editNode) {
-      setNodes(nodes => nodes.map(n => n.id === editNode.id ? { ...n, ...data } : n));
+      setNodes(nodes => nodes.map(n => n.id === editNode.id ? { ...n, ...data, position: n.position } : n));
     } else {
       setNodes(nodes => [
         ...nodes,
