@@ -5,10 +5,16 @@ import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Users, Activity, DollarSign, ArrowRight, Star, Zap, Plus, Trash2 } from 'lucide-react';
+import { TrendingUp, Users, Activity, DollarSign, ArrowRight, Star, Zap, Plus, Trash2, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserRoadmaps, createRoadmap, deleteRoadmap } from '@/integrations/supabase/roadmapApi';
+import { fetchUserRoadmaps, createRoadmap, deleteRoadmap, updateRoadmap } from '@/integrations/supabase/roadmapApi';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
+} from '@/components/ui/dropdown-menu';
 
 const stats = [
   { title: 'Total Users', value: '2,847', change: '+12%', icon: Users, trend: 'up' },
@@ -62,12 +68,21 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-background">
+    <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950">
       <AppSidebar />
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="flex-1 p-6 space-y-8">
-          {/* Roadmap Builder Button & Create Roadmap */}
+          {/* Welcome Section */}
+          <div className="space-y-2 mb-6">
+            <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Welcome{user && user.email ? `, ${user.email.split('@')[0]}` : ''}!
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Build, organize, and track your learning or project journeys with beautiful, interactive roadmaps.
+            </p>
+          </div>
+          {/* Create Roadmap Button */}
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
             <Button
               className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-lg shadow hover:from-blue-600 hover:to-purple-700"
@@ -79,22 +94,63 @@ const Dashboard: React.FC = () => {
           </div>
           {/* List of Past Roadmaps */}
           <div className="mb-8">
-            <h2 className="text-xl font-bold mb-2">Your Roadmaps</h2>
+            <h2 className="text-2xl font-bold mb-4">Your Roadmaps</h2>
             {loading ? (
               <div className="text-gray-500">Loading...</div>
             ) : roadmaps.length === 0 ? (
-              <div className="text-gray-500">No roadmaps found. Create your first roadmap!</div>
+              <div className="flex flex-col items-center justify-center py-16">
+                <img src="/public/placeholder.svg" alt="No roadmaps" className="w-32 h-32 mb-4 opacity-60" />
+                <p className="text-lg text-gray-500 mb-2">No roadmaps found.</p>
+                <Button onClick={() => setShowModal(true)} className="bg-blue-600 text-white px-5 py-2 rounded-full shadow hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" /> Create your first roadmap
+                </Button>
+              </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {roadmaps.map(rm => (
-                  <Card key={rm.id} className="hover:shadow-lg transition-shadow">
+                  <Card key={rm.id} className="hover:shadow-xl transition-shadow border-2 border-transparent hover:border-blue-400 group relative">
                     <CardHeader>
-                      <CardTitle>{rm.title}</CardTitle>
-                      <CardDescription>{rm.description}</CardDescription>
+                      <CardTitle className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                        <Star className="h-5 w-5 text-yellow-400 group-hover:scale-110 transition-transform" />
+                        {rm.title}
+                      </CardTitle>
+                      <CardDescription className="line-clamp-2 text-gray-500">
+                        {rm.description}
+                      </CardDescription>
+                      {/* 3-dot menu */}
+                      <div className="absolute top-4 right-4 z-10">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="ghost" className="rounded-full p-2">
+                              <MoreVertical className="h-5 w-5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={async () => {
+                                if (!rm.is_public) {
+                                  try {
+                                    await updateRoadmap(rm.id, { is_public: true });
+                                    rm.is_public = true;
+                                  } catch (err) {
+                                    alert('Failed to make roadmap public: ' + (err as Error).message);
+                                    return;
+                                  }
+                                }
+                                const publicUrl = `${window.location.origin}/roadmap/${rm.id}`;
+                                await navigator.clipboard.writeText(publicUrl);
+                                alert('Public link copied to clipboard!\n' + publicUrl);
+                              }}
+                            >
+                              <ArrowRight className="h-4 w-4 mr-2 inline" /> Share public link
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="flex gap-2">
-                        <Button size="sm" onClick={() => navigate(`/roadmap-builder/${rm.id}`)}>
+                        <Button size="sm" className="bg-blue-500 text-white hover:bg-blue-600" onClick={() => navigate(`/roadmap-builder/${rm.id}`)}>
                           Open in Builder
                         </Button>
                         <Button size="sm" variant="destructive" onClick={async () => {
@@ -116,144 +172,45 @@ const Dashboard: React.FC = () => {
               </div>
             )}
           </div>
-          {/* Welcome Section */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">
-              Welcome to your Dashboard
-            </h1>
-            <p className="text-muted-foreground">
-              Here's what's happening with your application today.
-            </p>
-          </div>
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <Card key={index} className="relative overflow-hidden">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {stat.title}
-                  </CardTitle>
-                  <stat.icon className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                  <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                    <Badge variant="secondary" className="text-green-600 bg-green-50">
-                      {stat.change}
-                    </Badge>
-                    <span>from last month</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          {/* Feature Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full transform translate-x-16 -translate-y-16" />
-              <CardHeader>
-                <div className="flex items-center space-x-2">
-                  <Zap className="h-5 w-5 text-blue-500" />
-                  <CardTitle>Quick Actions</CardTitle>
-                </div>
-                <CardDescription>
-                  Get started with common tasks and workflows.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full justify-between" variant="outline">
-                  Create New Project
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button className="w-full justify-between" variant="outline">
-                  Invite Team Members
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button className="w-full justify-between" variant="outline">
-                  View Analytics
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-            <Card className="relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-full transform translate-x-16 -translate-y-16" />
-              <CardHeader>
-                <div className="flex items-center space-x-2">
-                  <Star className="h-5 w-5 text-yellow-500" />
-                  <CardTitle>Recent Activity</CardTitle>
-                </div>
-                <CardDescription>
-                  Latest updates and notifications from your team.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="h-2 w-2 bg-green-500 rounded-full" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">New user registered</p>
-                    <p className="text-xs text-muted-foreground">2 minutes ago</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="h-2 w-2 bg-blue-500 rounded-full" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Project updated</p>
-                    <p className="text-xs text-muted-foreground">1 hour ago</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="h-2 w-2 bg-yellow-500 rounded-full" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">System maintenance</p>
-                    <p className="text-xs text-muted-foreground">3 hours ago</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
           {/* Getting Started Section */}
-          <Card>
+          <Card className="mt-8">
             <CardHeader>
               <CardTitle>Getting Started</CardTitle>
               <CardDescription>
-                Complete these steps to set up your application and start building amazing features.
+                New here? Follow these steps to make the most of your roadmap experience.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <div className="h-4 w-4 rounded-full bg-green-500" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium">Set up your profile</p>
-                    <p className="text-sm text-muted-foreground">Complete your account information</p>
-                  </div>
-                  <Badge variant="secondary">Complete</Badge>
-                </div>
-                <div className="flex items-center space-x-3">
                   <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
                     <div className="h-4 w-4 rounded-full bg-blue-500" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium">Connect your integrations</p>
-                    <p className="text-sm text-muted-foreground">Link your favorite tools and services</p>
+                    <p className="font-medium">Create your first roadmap</p>
+                    <p className="text-sm text-muted-foreground">Map out your learning or project journey.</p>
                   </div>
-                  <Button size="sm">
-                    Set up
-                  </Button>
+                  <Badge variant="secondary">Start</Badge>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
-                    <div className="h-4 w-4 rounded-full bg-gray-400" />
+                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <div className="h-4 w-4 rounded-full bg-purple-500" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium">Invite your team</p>
-                    <p className="text-sm text-muted-foreground">Collaborate with your colleagues</p>
+                    <p className="font-medium">Open the Roadmap Builder</p>
+                    <p className="text-sm text-muted-foreground">Drag, connect, and customize your nodes.</p>
                   </div>
-                  <Button size="sm" variant="outline">
-                    Invite
-                  </Button>
+                  <Badge variant="secondary">Explore</Badge>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                    <div className="h-4 w-4 rounded-full bg-green-500" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">Track your progress</p>
+                    <p className="text-sm text-muted-foreground">Mark nodes as complete and visualize your journey.</p>
+                  </div>
+                  <Badge variant="secondary">Progress</Badge>
                 </div>
               </div>
             </CardContent>
