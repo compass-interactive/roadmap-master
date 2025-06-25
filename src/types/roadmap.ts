@@ -7,6 +7,8 @@ export interface RoadmapNode {
   type: RoadmapNodeType;
   resource: string;
   position: { x: number; y: number };
+  bgColor?: string;
+  fontColor?: string;
 }
 
 export interface Roadmap {
