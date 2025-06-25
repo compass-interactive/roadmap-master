@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Users, Activity, DollarSign, ArrowRight, Star, Zap } from 'lucide-react';
+import { TrendingUp, Users, Activity, DollarSign, ArrowRight, Star, Zap, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { fetchUserRoadmaps, createRoadmap, deleteRoadmap } from '@/integrations/supabase/roadmapApi';
+import { supabase } from '@/integrations/supabase/client';
 
 const stats = [
   { title: 'Total Users', value: '2,847', change: '+12%', icon: Users, trend: 'up' },
@@ -17,21 +19,102 @@ const stats = [
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [roadmaps, setRoadmaps] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newDescription, setNewDescription] = useState('');
+  const [creating, setCreating] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    setLoading(true);
+    fetchUserRoadmaps(user.id)
+      .then(setRoadmaps)
+      .finally(() => setLoading(false));
+  }, [user]);
+
+  const handleCreateRoadmap = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !newTitle) return;
+    setCreating(true);
+    try {
+      const roadmap = await createRoadmap({
+        title: newTitle,
+        description: newDescription,
+        owner_id: user.id,
+        is_public: false,
+      });
+      setRoadmaps(rms => [roadmap, ...rms]);
+      setShowModal(false);
+      setNewTitle('');
+      setNewDescription('');
+    } catch (err) {
+      alert('Failed to create roadmap: ' + (err as Error).message);
+    } finally {
+      setCreating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex w-full bg-background">
       <AppSidebar />
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="flex-1 p-6 space-y-8">
-          {/* Roadmap Builder Button */}
-          <div className="flex justify-end mb-4">
+          {/* Roadmap Builder Button & Create Roadmap */}
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
             <Button
               className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-lg shadow hover:from-blue-600 hover:to-purple-700"
-              onClick={() => navigate('/roadmap-builder')}
+              onClick={() => setShowModal(true)}
             >
-              <Zap className="h-5 w-5 mr-2 inline" />
-              Create a Roadmap
+              <Plus className="h-5 w-5 mr-2 inline" />
+              Create New Roadmap
             </Button>
+          </div>
+          {/* List of Past Roadmaps */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold mb-2">Your Roadmaps</h2>
+            {loading ? (
+              <div className="text-gray-500">Loading...</div>
+            ) : roadmaps.length === 0 ? (
+              <div className="text-gray-500">No roadmaps found. Create your first roadmap!</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {roadmaps.map(rm => (
+                  <Card key={rm.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle>{rm.title}</CardTitle>
+                      <CardDescription>{rm.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => navigate(`/roadmap-builder/${rm.id}`)}>
+                          Open in Builder
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={async () => {
+                          if (window.confirm(`Are you sure you want to delete the roadmap "${rm.title}"? This cannot be undone.`)) {
+                            try {
+                              await deleteRoadmap(rm.id);
+                              setRoadmaps(rms => rms.filter(r => r.id !== rm.id));
+                            } catch (err) {
+                              alert('Failed to delete roadmap: ' + (err as Error).message);
+                            }
+                          }
+                        }}>
+                          <Trash2 className="h-4 w-4 mr-1" /> Delete
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
           {/* Welcome Section */}
           <div className="space-y-2">
@@ -176,6 +259,42 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
         </main>
+        {/* Modal for creating roadmap */}
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-bold mb-4">Create New Roadmap</h2>
+              <form onSubmit={handleCreateRoadmap} className="space-y-4">
+                <div>
+                  <label className="block mb-1 font-medium">Title</label>
+                  <input
+                    className="w-full border rounded px-3 py-2"
+                    value={newTitle}
+                    onChange={e => setNewTitle(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-medium">Description</label>
+                  <textarea
+                    className="w-full border rounded px-3 py-2"
+                    value={newDescription}
+                    onChange={e => setNewDescription(e.target.value)}
+                    rows={2}
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setShowModal(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={creating}>
+                    {creating ? 'Creating...' : 'Create'}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
         <Footer />
       </div>
     </div>

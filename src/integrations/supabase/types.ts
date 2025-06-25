@@ -42,6 +42,188 @@ export type Database = {
         }
         Relationships: []
       }
+      roadmap_edges: {
+        Row: {
+          created_at: string | null
+          id: string
+          roadmap_id: string | null
+          source_node_id: string | null
+          target_node_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          roadmap_id?: string | null
+          source_node_id?: string | null
+          target_node_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          roadmap_id?: string | null
+          source_node_id?: string | null
+          target_node_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roadmap_edges_roadmap_id_fkey"
+            columns: ["roadmap_id"]
+            isOneToOne: false
+            referencedRelation: "roadmaps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roadmap_edges_source_node_id_fkey"
+            columns: ["source_node_id"]
+            isOneToOne: false
+            referencedRelation: "roadmap_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roadmap_edges_target_node_id_fkey"
+            columns: ["target_node_id"]
+            isOneToOne: false
+            referencedRelation: "roadmap_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roadmap_nodes: {
+        Row: {
+          bgcolor: string | null
+          created_at: string | null
+          description: string | null
+          fontcolor: string | null
+          id: string
+          order: number | null
+          position_x: number
+          position_y: number
+          resource: string | null
+          roadmap_id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          bgcolor?: string | null
+          created_at?: string | null
+          description?: string | null
+          fontcolor?: string | null
+          id?: string
+          order?: number | null
+          position_x: number
+          position_y: number
+          resource?: string | null
+          roadmap_id: string
+          title: string
+          type: string
+        }
+        Update: {
+          bgcolor?: string | null
+          created_at?: string | null
+          description?: string | null
+          fontcolor?: string | null
+          id?: string
+          order?: number | null
+          position_x?: number
+          position_y?: number
+          resource?: string | null
+          roadmap_id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roadmap_nodes_roadmap_id_fkey"
+            columns: ["roadmap_id"]
+            isOneToOne: false
+            referencedRelation: "roadmaps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roadmaps: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          forked_from_id: string | null
+          id: string
+          is_public: boolean
+          owner_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          forked_from_id?: string | null
+          id?: string
+          is_public?: boolean
+          owner_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          forked_from_id?: string | null
+          id?: string
+          is_public?: boolean
+          owner_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roadmaps_forked_from_id_fkey"
+            columns: ["forked_from_id"]
+            isOneToOne: false
+            referencedRelation: "roadmaps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roadmap_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          id: string
+          node_id: string
+          roadmap_id: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          node_id: string
+          roadmap_id: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          node_id?: string
+          roadmap_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roadmap_progress_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "roadmap_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roadmap_progress_roadmap_id_fkey"
+            columns: ["roadmap_id"]
+            isOneToOne: false
+            referencedRelation: "roadmaps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

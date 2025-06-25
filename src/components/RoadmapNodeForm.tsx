@@ -5,8 +5,8 @@ import { RoadmapNode, RoadmapNodeType } from '@/types/roadmap';
 interface RoadmapNodeFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (node: Omit<RoadmapNode, 'id' | 'position'> & { bgColor?: string; fontColor?: string }) => void;
-  initialNode?: Partial<RoadmapNode>;
+  onSubmit: (data: { title: string; description: string; resource: string; type: RoadmapNodeType; bgColor?: string; fontColor?: string }) => void;
+  initialNode?: Partial<{ title: string; description: string; resource: string; type: RoadmapNodeType; bgColor?: string; fontColor?: string }>;
   disableCloseOnOutsideClick?: boolean;
 }
 
@@ -36,7 +36,7 @@ const RoadmapNodeForm: React.FC<RoadmapNodeFormProps> = ({ open, onClose, onSubm
 
   return (
     <Dialog open={open} onOpenChange={v => { if (!v && !disableCloseOnOutsideClick) onClose(); }}>
-      <DialogContent className="max-w-md" hideCloseButton={true}>
+      <DialogContent className="max-w-md" hideCloseButton={true} aria-describedby={undefined}>
         <DialogTitle>{initialNode ? 'Edit Node' : 'Add Node'}</DialogTitle>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

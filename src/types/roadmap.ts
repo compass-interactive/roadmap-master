@@ -1,14 +1,18 @@
 export type RoadmapNodeType = 'video' | 'article' | 'quiz' | 'other';
 
-export interface RoadmapNode {
-  id: string;
+export interface RoadmapNodeData {
   title: string;
   description: string;
-  type: RoadmapNodeType;
   resource: string;
-  position: { x: number; y: number };
   bgColor?: string;
   fontColor?: string;
+}
+
+export interface RoadmapNode {
+  id: string;
+  type: RoadmapNodeType;
+  position: { x: number; y: number };
+  data: RoadmapNodeData;
 }
 
 export interface Roadmap {

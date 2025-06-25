@@ -1,4 +1,3 @@
-
 -- Create a table for user profiles
 CREATE TABLE public.profiles (
   id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
@@ -48,3 +47,12 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Roadmap Edges Table
+CREATE TABLE IF NOT EXISTS public.roadmap_edges (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  roadmap_id uuid REFERENCES public.roadmaps(id) ON DELETE CASCADE,
+  source_node_id uuid REFERENCES public.roadmap_nodes(id) ON DELETE CASCADE,
+  target_node_id uuid REFERENCES public.roadmap_nodes(id) ON DELETE CASCADE,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now())
+);
