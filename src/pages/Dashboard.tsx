@@ -15,6 +15,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem
 } from '@/components/ui/dropdown-menu';
+import { exportRoadmapToPDF } from '@/lib/utils';
+import { fetchRoadmapNodes } from '@/integrations/supabase/roadmapApi';
 
 const stats = [
   { title: 'Total Users', value: '2,847', change: '+12%', icon: Users, trend: 'up' },
@@ -32,6 +34,7 @@ const Dashboard: React.FC = () => {
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [creating, setCreating] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -149,7 +152,7 @@ const Dashboard: React.FC = () => {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <Button size="sm" className="bg-blue-500 text-white hover:bg-blue-600" onClick={() => navigate(`/roadmap-builder/${rm.id}`)}>
                           Open in Builder
                         </Button>
@@ -164,6 +167,28 @@ const Dashboard: React.FC = () => {
                           }
                         }}>
                           <Trash2 className="h-4 w-4 mr-1" /> Delete
+                        </Button>
+                        <Button size="sm" className="bg-gray-700 text-white hover:bg-gray-800" disabled={downloadingId === rm.id} onClick={async () => {
+                          setDownloadingId(rm.id);
+                          try {
+                            const nodes = await fetchRoadmapNodes(rm.id);
+                            exportRoadmapToPDF({
+                              title: rm.title,
+                              description: rm.description,
+                              nodes: nodes.map(n => ({
+                                ...n,
+                                bgcolor: n.bgcolor,
+                                fontcolor: n.fontcolor
+                              })),
+                              edges: [] // You may want to fetch edges here if needed
+                            });
+                          } catch (err) {
+                            alert('Failed to export PDF: ' + (err as Error).message);
+                          } finally {
+                            setDownloadingId(null);
+                          }
+                        }}>
+                          {downloadingId === rm.id ? 'Downloading...' : 'Download as PDF'}
                         </Button>
                       </div>
                     </CardContent>

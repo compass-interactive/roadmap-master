@@ -17,6 +17,7 @@ import {
 } from '@/integrations/supabase/roadmapApi';
 import { supabase } from '@/integrations/supabase/client';
 import { useLocation, useParams } from 'react-router-dom';
+import { exportRoadmapToPDF } from '@/lib/utils';
 
 const RoadmapBuilder: React.FC = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -271,6 +272,27 @@ const RoadmapBuilder: React.FC = () => {
             disabled={!selectedRoadmapId}
           >
             Save
+          </button>
+          <button
+            className="px-5 py-2 bg-gray-700 flex justify-center items-center gap-2 text-sm text-semibold text-white rounded-full hover:bg-gray-800"
+            onClick={() => {
+              if (!selectedRoadmapId) return;
+              const roadmap = roadmaps.find(rm => rm.id === selectedRoadmapId);
+              exportRoadmapToPDF({
+                title: roadmap?.title || 'Untitled Roadmap',
+                description: roadmap?.description || '',
+                nodes: nodes.map(n => ({
+                  ...n.data,
+                  id: n.id,
+                  bgcolor: n.data.bgColor,
+                  fontcolor: n.data.fontColor
+                })),
+                edges: rawEdges
+              });
+            }}
+            disabled={!selectedRoadmapId || nodes.length === 0}
+          >
+            Download as PDF
           </button>
         </div>
       </header>

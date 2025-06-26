@@ -4,6 +4,7 @@ import RoadmapCanvas from '../components/RoadmapCanvas';
 import { fetchRoadmap, fetchRoadmapNodes, fetchRoadmapEdges } from '@/integrations/supabase/roadmapApi';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { exportRoadmapToPDF } from '@/lib/utils';
 
 const PublicRoadmap: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -67,8 +68,29 @@ const PublicRoadmap: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950 flex flex-col items-center">
       <Card className="w-full max-w-3xl mt-8 mb-4 shadow-xl">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">{roadmap.title}</CardTitle>
-          <CardDescription className="text-lg text-gray-500">{roadmap.description}</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-3xl font-bold">{roadmap.title}</CardTitle>
+              <CardDescription className="text-lg text-gray-500">{roadmap.description}</CardDescription>
+            </div>
+            <Button
+              className="ml-4 bg-gray-700 text-white hover:bg-gray-800"
+              onClick={() => exportRoadmapToPDF({
+                title: roadmap.title,
+                description: roadmap.description,
+                nodes: nodes.map(n => ({
+                  ...n.data,
+                  id: n.id,
+                  bgcolor: n.data.bgColor,
+                  fontcolor: n.data.fontColor
+                })),
+                edges: edges
+              })}
+              disabled={!nodes.length}
+            >
+              Download as PDF
+            </Button>
+          </div>
         </CardHeader>
       </Card>
       <div className="w-full max-w-5xl relative">
