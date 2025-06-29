@@ -35,7 +35,7 @@ export const Header = () => {
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">A</span>
               </div>
-              <h1 className="text-xl font-semibold">AppName</h1>
+              <h1 className="text-xl font-semibold">RoadMaster</h1>
             </div>
           </div>
           <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
@@ -51,9 +51,9 @@ export const Header = () => {
           <SidebarTrigger className="lg:hidden" />
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
+              <span className="text-white font-bold text-sm">R</span>
             </div>
-            <h1 className="text-xl font-semibold">AppName</h1>
+            <h1 className="text-xl font-semibold">RoadMaster</h1>
           </div>
         </div>
         
