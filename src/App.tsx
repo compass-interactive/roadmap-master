@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import RoadmapBuilder from './pages/RoadmapBuilder';
 import PublicRoadmap from './pages/PublicRoadmap';
+import AITeacher from "./pages/AITeacher";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/roadmap-builder" element={<RoadmapBuilder />} />
             <Route path="/roadmap-builder/:roadmapId" element={<RoadmapBuilder />} />
             <Route path="/roadmap/:id" element={<PublicRoadmap />} />
+            <Route path="/ai-teacher" element={<AITeacher />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

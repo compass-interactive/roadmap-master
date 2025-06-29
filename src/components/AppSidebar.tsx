@@ -1,4 +1,3 @@
-
 import { Calendar, Home, User, Settings, BookOpen, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -43,6 +42,11 @@ const menuItems = [
     title: "Settings",
     url: "#",
     icon: Settings,
+  },
+  {
+    title: "AI Teacher",
+    url: "/ai-teacher",
+    icon: User,
   },
 ];
 

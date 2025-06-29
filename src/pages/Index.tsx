@@ -4,6 +4,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import Dashboard from './Dashboard';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AITeacher from './AITeacher';
 
 const Index = () => {
   const { user, loading } = useAuth();
