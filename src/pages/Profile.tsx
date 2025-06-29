@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { UserProfile } from '@/components/UserProfile';
 import { UserDashboard } from '@/components/UserDashboard';
@@ -8,6 +7,9 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Home, ArrowLeft } from 'lucide-react';
 
 // Mock activities for now
 const mockActivities: UserActivity[] = [
@@ -34,6 +36,7 @@ const mockActivities: UserActivity[] = [
 const Profile = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -128,6 +131,18 @@ const Profile = () => {
   return (
     <ProtectedRoute>
       <div className="container mx-auto px-4 py-8">
+        {/* Home/Back Button */}
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
+
         <Tabs defaultValue="dashboard" className="w-full">
           <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-8">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>

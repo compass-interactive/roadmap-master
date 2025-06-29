@@ -1,4 +1,4 @@
-import { Calendar, Home, User, Settings, BookOpen, MessageSquare } from "lucide-react";
+import { Calendar, Home, User, Settings, BookOpen, MessageSquare, Globe } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -24,13 +24,18 @@ const menuItems = [
     icon: User,
   },
   {
-    title: "Roadmaps",
-    url: "#",
+    title: "My Roadmaps",
+    url: "/roadmaps",
     icon: BookOpen,
   },
   {
+    title: "Explore Roadmaps",
+    url: "/explore",
+    icon: Globe,
+  },
+  {
     title: "Forum",
-    url: "#",
+    url: "/forum",
     icon: MessageSquare,
   },
   {
@@ -42,11 +47,6 @@ const menuItems = [
     title: "Settings",
     url: "#",
     icon: Settings,
-  },
-  {
-    title: "AI Teacher",
-    url: "/ai-teacher",
-    icon: User,
   },
 ];
 
