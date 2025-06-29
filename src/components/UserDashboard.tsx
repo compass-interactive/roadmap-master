@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -72,11 +71,11 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ activities }) => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{fontFamily: 'Inter, Rubik, sans-serif'}}>
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold">Dashboard</h2>
+        <h2 className="text-3xl font-bold text-blue-700">Dashboard</h2>
         <div className="flex gap-2">
-          <Badge variant="secondary" className="flex items-center gap-1">
+          <Badge variant="secondary" className="flex items-center gap-1 bg-blue-100 text-blue-700">
             <TrendingUp className="h-3 w-3" />
             {activities.length} Activities
           </Badge>
@@ -87,30 +86,30 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ activities }) => {
         <ActivityCard
           title="Recent Roadmaps"
           items={recentRoadmaps}
-          icon={<BookOpen className="h-5 w-5" />}
+          icon={<BookOpen className="h-5 w-5 text-blue-400" />}
           emptyMessage="No roadmaps viewed yet"
         />
         
         <ActivityCard
           title="Saved Nodes"
           items={savedNodes}
-          icon={<Bookmark className="h-5 w-5" />}
+          icon={<Bookmark className="h-5 w-5 text-blue-400" />}
           emptyMessage="No nodes saved yet"
         />
         
         <ActivityCard
           title="Forum Replies"
           items={forumReplies}
-          icon={<MessageSquare className="h-5 w-5" />}
+          icon={<MessageSquare className="h-5 w-5 text-blue-400" />}
           emptyMessage="No forum activity yet"
         />
       </div>
 
       {/* Quick Stats */}
-      <Card>
+      <Card className="card-base">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-blue-700">
+            <Calendar className="h-5 w-5 text-blue-400" />
             Activity Overview
           </CardTitle>
         </CardHeader>
@@ -120,19 +119,19 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ activities }) => {
               <p className="text-2xl font-bold text-blue-600">
                 {recentRoadmaps.length}
               </p>
-              <p className="text-sm text-muted-foreground">Roadmaps Viewed</p>
+              <p className="text-sm text-gray-500">Roadmaps Viewed</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-blue-600">
                 {savedNodes.length}
               </p>
-              <p className="text-sm text-muted-foreground">Nodes Saved</p>
+              <p className="text-sm text-gray-500">Nodes Saved</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-2xl font-bold text-blue-600">
                 {forumReplies.length}
               </p>
-              <p className="text-sm text-muted-foreground">Forum Replies</p>
+              <p className="text-sm text-gray-500">Forum Replies</p>
             </div>
           </div>
         </CardContent>

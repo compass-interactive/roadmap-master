@@ -108,21 +108,21 @@ const GlobalRoadmaps = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8" style={{fontFamily: 'Inter, Rubik, sans-serif'}}>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2"
+            onClick={() => navigate('/')} 
+            className="flex items-center gap-2 bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 hover:text-blue-800"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Explore Roadmaps</h1>
-            <p className="text-muted-foreground">Discover learning roadmaps created by the community</p>
+            <h1 className="text-3xl font-bold text-blue-700">Explore Roadmaps</h1>
+            <p className="text-gray-500">Discover learning roadmaps created by the community</p>
           </div>
         </div>
       </div>
@@ -130,36 +130,36 @@ const GlobalRoadmaps = () => {
       {/* Search Bar */}
       <div className="mb-8">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300 h-4 w-4" />
           <Input
             placeholder="Search roadmaps by title, description, or author..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 border-blue-200 focus:ring-blue-400"
           />
         </div>
       </div>
 
       {/* Roadmaps List */}
       {filteredRoadmaps.length === 0 ? (
-        <Card className="text-center py-12">
+        <Card className="card-base text-center py-12">
           <CardContent>
             <div className="flex flex-col items-center gap-4">
-              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-                <BookOpen className="h-8 w-8 text-muted-foreground" />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                <BookOpen className="h-8 w-8 text-blue-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-lg font-semibold mb-2 text-blue-700">
                   {searchTerm ? 'No roadmaps found' : 'No public roadmaps yet'}
                 </h3>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-gray-500 mb-4">
                   {searchTerm 
                     ? 'Try adjusting your search terms or browse all roadmaps'
                     : 'Be the first to create a public roadmap for the community'
                   }
                 </p>
                 {!searchTerm && (
-                  <Button onClick={() => navigate('/roadmap-builder')}>
+                  <Button onClick={() => navigate('/roadmap-builder')} className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded-xl">
                     <BookOpen className="h-4 w-4 mr-2" />
                     Create First Roadmap
                   </Button>
@@ -171,16 +171,16 @@ const GlobalRoadmaps = () => {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredRoadmaps.map((roadmap) => (
-            <Card key={roadmap.id} className="hover:shadow-lg transition-shadow">
+            <Card key={roadmap.id} className="card-base hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="line-clamp-2">{roadmap.title}</CardTitle>
-                    <CardDescription className="line-clamp-2 mt-2">
+                    <CardTitle className="line-clamp-2 text-blue-700">{roadmap.title}</CardTitle>
+                    <CardDescription className="line-clamp-2 mt-2 text-gray-500">
                       {roadmap.description || 'No description provided'}
                     </CardDescription>
                   </div>
-                  <Badge variant="default">Public</Badge>
+                  <Badge variant="default" className="bg-blue-100 text-blue-700">Public</Badge>
                 </div>
               </CardHeader>
               <CardContent>
@@ -192,15 +192,15 @@ const GlobalRoadmaps = () => {
                       {getAuthorName(roadmap).charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-gray-500">
                     by {getAuthorName(roadmap)}
                   </span>
                 </div>
 
                 {/* Date */}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                   <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
+                    <Calendar className="h-4 w-4 text-blue-400" />
                     {formatDate(roadmap.created_at)}
                   </div>
                 </div>
@@ -209,7 +209,7 @@ const GlobalRoadmaps = () => {
                 <Button
                   variant="outline"
                   onClick={() => navigate(`/roadmap/${roadmap.id}`)}
-                  className="w-full"
+                  className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800"
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Roadmap
@@ -222,7 +222,7 @@ const GlobalRoadmaps = () => {
 
       {/* Results Count */}
       {filteredRoadmaps.length > 0 && (
-        <div className="mt-8 text-center text-sm text-muted-foreground">
+        <div className="mt-8 text-center text-sm text-gray-500">
           Showing {filteredRoadmaps.length} of {roadmaps.length} public roadmaps
         </div>
       )}

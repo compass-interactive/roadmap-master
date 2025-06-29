@@ -130,29 +130,26 @@ const Profile = () => {
 
   return (
     <ProtectedRoute>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8" style={{fontFamily: 'Inter, Rubik, sans-serif'}}>
         {/* Home/Back Button */}
         <div className="mb-6">
           <Button
             variant="outline"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2"
+            onClick={() => navigate('/')} 
+            className="flex items-center gap-2 bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 hover:text-blue-800"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Button>
         </div>
-
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-8">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-8 bg-blue-50 border-blue-200">
+            <TabsTrigger value="dashboard" className="text-blue-700">Dashboard</TabsTrigger>
+            <TabsTrigger value="profile" className="text-blue-700">Profile</TabsTrigger>
           </TabsList>
-          
           <TabsContent value="dashboard" className="space-y-6">
             <UserDashboard activities={mockActivities} />
           </TabsContent>
-          
           <TabsContent value="profile" className="flex justify-center">
             {userProfile && (
               <UserProfile 

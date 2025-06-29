@@ -219,27 +219,27 @@ const Forum = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8" style={{fontFamily: 'Inter, Rubik, sans-serif'}}>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2"
+            onClick={() => navigate('/')} 
+            className="flex items-center gap-2 bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 hover:text-blue-800"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Community Forum</h1>
-            <p className="text-muted-foreground">Join the discussion and share your knowledge</p>
+            <h1 className="text-3xl font-bold text-blue-700">Community Forum</h1>
+            <p className="text-gray-500">Join the discussion and share your knowledge</p>
           </div>
         </div>
         <div className="flex gap-2">
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl shadow-sm">
                 <Plus className="h-4 w-4" />
                 New Post
               </Button>
@@ -304,16 +304,16 @@ const Forum = () => {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300 h-4 w-4" />
           <Input
             placeholder="Search posts..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 border-blue-200 focus:ring-blue-400"
           />
         </div>
         <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-48 border-blue-200 focus:ring-blue-400">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -329,24 +329,24 @@ const Forum = () => {
 
       {/* Posts List */}
       {filteredPosts.length === 0 ? (
-        <Card className="text-center py-12">
+        <Card className="card-base text-center py-12">
           <CardContent>
             <div className="flex flex-col items-center gap-4">
-              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-                <MessageSquare className="h-8 w-8 text-muted-foreground" />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                <MessageSquare className="h-8 w-8 text-blue-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-lg font-semibold mb-2 text-blue-700">
                   {searchTerm ? 'No posts found' : 'No posts yet'}
                 </h3>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-gray-500 mb-4">
                   {searchTerm 
                     ? 'Try adjusting your search terms or browse all posts'
                     : 'Be the first to start a discussion in the community!'
                   }
                 </p>
                 {!searchTerm && (
-                  <Button onClick={() => setIsCreateDialogOpen(true)}>
+                  <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl">
                     <Plus className="h-4 w-4 mr-2" />
                     Create First Post
                   </Button>
@@ -358,7 +358,7 @@ const Forum = () => {
       ) : (
         <div className="space-y-4">
           {filteredPosts.map((post) => (
-            <Card key={post.id} className="hover:shadow-lg transition-shadow">
+            <Card key={post.id} className="card-base hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -366,24 +366,24 @@ const Forum = () => {
                       {post.is_pinned && <Pin className="h-4 w-4 text-yellow-500" />}
                       {post.is_locked && <Lock className="h-4 w-4 text-red-500" />}
                       <CardTitle 
-                        className="line-clamp-2 cursor-pointer hover:text-blue-600"
+                        className="line-clamp-2 cursor-pointer hover:text-blue-600 text-blue-700"
                         onClick={() => navigate(`/forum/post/${post.id}`)}
                       >
                         {post.title}
                       </CardTitle>
                     </div>
-                    <CardDescription className="line-clamp-2">
+                    <CardDescription className="line-clamp-2 text-gray-500">
                       {post.content}
                     </CardDescription>
                   </div>
                   <div className="flex flex-col items-end gap-2">
-                    <Badge variant="outline">
+                    <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-200">
                       {post.category}
                     </Badge>
                     {post.tags.length > 0 && (
                       <div className="flex gap-1">
                         {post.tags.slice(0, 3).map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge key={index} variant="secondary" className="text-xs bg-blue-50 text-blue-700">
                             {tag}
                           </Badge>
                         ))}
@@ -402,13 +402,13 @@ const Forum = () => {
                         {getAuthorName(post).charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-gray-500">
                       by {getAuthorName(post)}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
+                      <Calendar className="h-4 w-4 text-blue-400" />
                       {formatDate(post.created_at)}
                     </div>
                   </div>
@@ -421,7 +421,7 @@ const Forum = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => navigate(`/forum/post/${post.id}`)}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-blue-700 hover:bg-blue-50"
                     >
                       <Eye className="h-4 w-4" />
                       {post.view_count || 0} views
@@ -430,7 +430,7 @@ const Forum = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => navigate(`/forum/post/${post.id}`)}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-blue-700 hover:bg-blue-50"
                     >
                       <MessageSquare className="h-4 w-4" />
                       Comments
@@ -441,7 +441,7 @@ const Forum = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleSharePost(post.id, post.title)}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-blue-700 hover:bg-blue-50"
                       title="Share post"
                     >
                       <Share2 className="h-4 w-4" />
@@ -451,7 +451,7 @@ const Forum = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleLikePost(post.id)}
-                      className={`flex items-center gap-2 ${post.like_count > 0 ? 'text-red-500' : ''}`}
+                      className={`flex items-center gap-2 ${post.like_count > 0 ? 'text-blue-700' : 'text-blue-400'} hover:bg-blue-50`}
                     >
                       <Heart className={`h-4 w-4 ${post.like_count > 0 ? 'fill-current' : ''}`} />
                       {post.like_count || 0}
@@ -466,7 +466,7 @@ const Forum = () => {
 
       {/* Results Count */}
       {filteredPosts.length > 0 && (
-        <div className="mt-8 text-center text-sm text-muted-foreground">
+        <div className="mt-8 text-center text-sm text-gray-500">
           Showing {filteredPosts.length} of {posts.length} posts
         </div>
       )}
