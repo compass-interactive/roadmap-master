@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -27,36 +26,31 @@ export const Header = () => {
 
   if (loading) {
     return (
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" style={{fontFamily: 'Inter, Rubik, sans-serif'}}>
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <SidebarTrigger className="lg:hidden" />
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
-              <h1 className="text-xl font-semibold">RoadMaster</h1>
+              <img src="/favicon-32x32.png" alt="RoadMaster Logo" className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-yellow-400 p-1" />
+              <h1 className="text-xl font-semibold text-blue-700">RoadMaster</h1>
             </div>
           </div>
-          <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+          <div className="w-8 h-8 bg-blue-100 rounded-full animate-pulse" />
         </div>
       </header>
     );
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" style={{fontFamily: 'Inter, Rubik, sans-serif'}}>
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-4">
           <SidebarTrigger className="lg:hidden" />
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">R</span>
-            </div>
-            <h1 className="text-xl font-semibold">RoadMaster</h1>
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}> 
+            {/* <img src="/favicon-32x32.png" alt="RoadMaster Logo" className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-yellow-400 p-1" /> */}
+            <h1 className="text-xl font-semibold text-blue-700">RoadMaster</h1>
           </div>
         </div>
-        
         <nav className="flex items-center gap-2">
           {user ? (
             <DropdownMenu>
@@ -99,7 +93,7 @@ export const Header = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={() => setAuthModal('login')}
-                className="hidden sm:flex"
+                className="hidden sm:flex text-blue-700 hover:bg-blue-50"
               >
                 <LogIn className="h-4 w-4 mr-2" />
                 Login
@@ -107,7 +101,7 @@ export const Header = () => {
               <Button 
                 size="sm"
                 onClick={() => setAuthModal('signup')}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                className="bg-gradient-to-r from-blue-500 to-yellow-400 hover:from-blue-600 hover:to-yellow-500 text-white"
               >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Sign Up
@@ -116,7 +110,6 @@ export const Header = () => {
           )}
         </nav>
       </div>
-
       <AuthModal 
         type={authModal} 
         onClose={() => setAuthModal(null)} 
