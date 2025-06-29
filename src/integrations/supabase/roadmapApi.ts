@@ -100,6 +100,66 @@ export async function fetchUserRoadmaps(userId: string) {
   return data;
 }
 
+// Fetch all public roadmaps from all users
+export async function fetchAllPublicRoadmaps() {
+  try {
+    // Simple approach: just fetch all roadmaps that are public
+    const { data, error } = await supabase
+      .from('roadmaps')
+      .select('*')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching public roadmaps:', error);
+      // If there's an error, try fetching all roadmaps without the public filter
+      const { data: allData, error: allError } = await supabase
+        .from('roadmaps')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (allError) {
+        console.error('Error fetching all roadmaps:', allError);
+        throw allError;
+      }
+      
+      console.log('Fetched all roadmaps (no public filter):', allData);
+      return allData || [];
+    }
+    
+    console.log('Fetched public roadmaps:', data);
+    return data || [];
+  } catch (error) {
+    console.error('Error in fetchAllPublicRoadmaps:', error);
+    // Return empty array instead of throwing
+    return [];
+  }
+}
+
+// Debug function to check if roadmaps table exists and has data
+export async function debugRoadmapsTable() {
+  try {
+    // Check if we can fetch any roadmaps at all
+    const { data, error } = await supabase
+      .from('roadmaps')
+      .select('*')
+      .limit(5);
+    
+    console.log('Debug - All roadmaps:', data);
+    console.log('Debug - Error:', error);
+    
+    if (error) {
+      console.error('Error accessing roadmaps table:', error);
+      return null;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Debug - Exception:', error);
+    return null;
+  }
+}
+
 // Fetch all edges for a roadmap
 export async function fetchRoadmapEdges(roadmapId: string) {
   const { data, error } = await supabase
